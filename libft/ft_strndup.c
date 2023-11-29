@@ -1,38 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   ft_strndup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/19 16:30:11 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/11/26 14:25:37 by vnaslund         ###   ########.fr       */
+/*   Created: 2023/11/27 12:13:57 by vnaslund          #+#    #+#             */
+/*   Updated: 2023/11/27 12:26:59 by vnaslund         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-long	ft_atoi(const char *str)
-{
-	int			i;
-	int			sign;
-	long long	num;
+#include "libft.h"
 
-	sign = 1;
+char	*ft_strndup(const char *s1, size_t n)
+{
+	char	*ret;
+	size_t	i;
+	size_t	len;
+
+	if (n > ft_strlen(s1))
+		len = ft_strlen(s1);
+	else
+		len = n;
+	ret = (char *)malloc(sizeof(char) * (len + 1));
+	if (!(ret))
+	{
+		errno = ENOMEM;
+		return (NULL);
+	}
 	i = 0;
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
-		|| str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
-		i++;
-	if (str[i] == '-')
+	while (s1[i] && i < n)
 	{
-		sign = -1;
+		ret[i] = s1[i];
 		i++;
 	}
-	else if (str[i] == '+')
-		i++;
-	num = 0;
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		num = num * 10 + str[i] - '0';
-		i++;
-	}
-	return (num * sign);
+	ret[i] = '\0';
+	return (ret);
 }

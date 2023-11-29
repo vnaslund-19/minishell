@@ -1,38 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_atoi.c                                          :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/19 16:30:11 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/11/26 14:25:37 by vnaslund         ###   ########.fr       */
+/*   Created: 2023/11/22 14:19:13 by vnaslund          #+#    #+#             */
+/*   Updated: 2023/11/29 16:29:40 by vnaslund         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-long	ft_atoi(const char *str)
-{
-	int			i;
-	int			sign;
-	long long	num;
+#include "../inc/minishell.h"
 
-	sign = 1;
-	i = 0;
-	while (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'
-		|| str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
-		i++;
-	if (str[i] == '-')
+int	main(int argc, char **argv, char **env)
+{
+	t_command	*cmd_list;
+
+	cmd_list = NULL;
+	(void)argv;
+	if (argc != 1)
 	{
-		sign = -1;
-		i++;
+		printf("This program does not accept arguments\n");
+		exit(127);
 	}
-	else if (str[i] == '+')
-		i++;
-	num = 0;
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		num = num * 10 + str[i] - '0';
-		i++;
-	}
-	return (num * sign);
+	start_minishell(cmd_list, env);
+	return (EXIT_SUCCESS);
 }
