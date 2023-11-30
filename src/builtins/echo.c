@@ -6,19 +6,19 @@
 /*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 16:17:43 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/11/24 14:02:54 by vnaslund         ###   ########.fr       */
+/*   Updated: 2023/11/30 14:52:59 by vnaslund         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../inc/minishell.h"
 
 int	ft_echo(char **cmd)
 {
 	int		i;
 	bool	print_nl;
 
-	if (ft_strncmp(cmd[0], "echo", 5) != 0)
-		return (bad_argument()); //to implement
+	//if (ft_strncmp(cmd[0], "echo", 5) != 0)
+	//	return (bad_argument()); //to implement
 	if (!cmd[1])
 	{
 		write(1, "\n", 1);

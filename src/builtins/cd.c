@@ -6,17 +6,17 @@
 /*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/24 13:14:00 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/11/24 14:02:54 by vnaslund         ###   ########.fr       */
+/*   Updated: 2023/11/30 15:02:31 by vnaslund         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "../../inc/minishell.h"
 
-static int	cd_to_home(char **cmd)
+static int	cd_to_home(void)
 {
 	char	*path_to_home;
 
-	path_to_home = getenv("HOME");
+	path_to_home = getenv("HOME"); // Is getenv allowed?
 	if (!path_to_home)
 	{
 		ft_putendl_fd("cd: HOME not set", 2);
@@ -33,10 +33,10 @@ static int	cd_to_home(char **cmd)
 
 int	ft_cd(char **cmd)
 {
-	if (ft_strncmp(cmd[0], "cd", 3) != 0)
-		return (bad_argument()); //to implement
+	//if (ft_strncmp(cmd[0], "cd", 3) != 0)
+	//	return (bad_argument()); //to implement
 	if (!cmd[1])
-		return (cd_to_home(cmd));
+		return (cd_to_home());
 	if (chdir(cmd[1]) == -1)
 	{
 		perror("cd");

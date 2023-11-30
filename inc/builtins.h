@@ -1,34 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd.c                                              :+:      :+:    :+:   */
+/*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/22 18:37:03 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/11/30 14:54:04 by vnaslund         ###   ########.fr       */
+/*   Created: 2023/11/25 15:49:25 by vnaslund          #+#    #+#             */
+/*   Updated: 2023/11/30 14:57:38 by vnaslund         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#ifndef BUILTINS_H
+# define BUILTINS_H
 
-//Use getcwd with NULL and 0 to dynamically allocate
-int	ft_pwd(void)
-{
-	char	*cwd;
-	int		status;
+# include "libft/libft.h"
+# include <stdbool.h>
+# include <limits.h>
+# include <signal.h>
+# include <sys/wait.h>
+# include <fcntl.h>
 
-	cwd = getcwd(NULL, 0);
-	if (cwd != NULL)
-	{
-		printf("%s\n", cwd);
-		free(cwd);
-		status = EXIT_SUCCESS;
-	}
-	else
-	{
-		perror("Error");
-		status = EXIT_FAILURE;
-	}
-	return (status);
-}
+# include "helpers.h"
+# include "shell.h"
+
+int		ft_echo(char **cmd);
+int		ft_exit(char **cmd);
+int		ft_pwd(void);
+int		ft_cd(char **cmd);
+int		ft_env(void);
+
+#endif
