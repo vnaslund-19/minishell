@@ -6,13 +6,13 @@
 /*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 16:20:47 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/12/19 17:53:46 by vnaslund         ###   ########.fr       */
+/*   Updated: 2023/12/20 18:28:37 by vnaslund         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/minishell.h"
 
-int g_interactive_mode;
+int	g_interactive_mode;
 
 void	ft_ctrl_c(int signal)
 {
@@ -60,19 +60,16 @@ void	start_minishell(t_command *cmd_list, char **env)
 		else
 			continue ;
 		cmd_list = ft_create_command_list(input);
-		free(input);
 		g_interactive_mode = 0;
-		if (ft_is_cd_or_exit(cmd_list->args))
+		if (ft_is_cd_or_exit(cmd_list->args, cmd_list))
 			continue ;
 		//debug_print_cmd_list(cmd_list);
 		//continue;
 		pid = fork();
 		if (pid == 0)
-		{
-			exec_cmd(cmd_list, cmd_list->args, env);
-			exit(0);
-		}
+			execute(cmd_list, cmd_list->args, env);
 		wait(NULL);
-		// ft_free_cmd_list(cmd_list); double free in some cases for some reason
+		ft_free_cmd_list(cmd_list);
+		cmd_list = NULL;
 	}
 }

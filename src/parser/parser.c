@@ -6,7 +6,7 @@
 /*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/18 16:32:55 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/12/19 17:32:33 by vnaslund         ###   ########.fr       */
+/*   Updated: 2023/12/20 14:40:57 by vnaslund         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,15 @@ t_command	*ft_create_command_list(char *input)
 
 	i = 0;
 	commands = ft_split(input, '|');
+	free(input);
+	cmd_list = NULL;
 	while (commands[i])
 	{
 		cmd_list = ft_add_command(cmd_list, commands[i]);
 		i++;
 	}
 	fill_default_redirections(cmd_list);
+	ft_free_array((void **)commands);
 	return (cmd_list);
 }
 
@@ -57,13 +60,15 @@ t_command	*ft_create_command(char *command)
 	tokens = ft_split(command, ' ');
 	i = -1;
 	arg_count = 0;
+	new_cmd->stdin_redirect = NULL;
+	new_cmd->stdout_redirect = NULL;
 	while (tokens[++i])
 	{
 		handle_redirection(new_cmd, tokens, &i);
 		if (tokens[i])
 			arg_count++;
 		else
-			break ; // added for segfault fix
+			break ;
 	}
 	new_cmd->args = create_args_array(tokens, arg_count);
 	new_cmd->next = NULL;
