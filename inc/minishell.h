@@ -26,9 +26,11 @@
 # include "parser.h"
 # include "debug.h"
 # include "execute.h"
+# include "expander.h"
 
-void	exit_handler(int status, t_command *cmd_list, char *msg);
+void	ft_sighandler(void);
+void	exit_handler(int status, t_shell *shell, char *msg);
 
-extern	int g_interactive_mode;
+# define CMD_NOT_FOUND 127
 
 #endif

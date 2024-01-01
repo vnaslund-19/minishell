@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
+/*   By: xdarksyderx <xdarksyderx@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/22 14:19:13 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/11/30 17:20:32 by vnaslund         ###   ########.fr       */
+/*   Updated: 2023/12/27 20:41:03 by xdarksyderx      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,19 @@
 
 int	main(int argc, char **argv, char **env)
 {
-	t_command	*cmd_list;
+	t_shell	*shell;
 
-	cmd_list = NULL;
-	(void)argv;
 	if (argc != 1)
 	{
 		printf("This program does not accept arguments\n");
 		exit(127);
 	}
-	start_minishell(cmd_list, env);
+	shell = malloc(sizeof(t_shell));
+	if (!shell)
+		return (EXIT_FAILURE);
+	shell->env = env;
+	shell->last_exit_status = 0;
+	(void)argv;
+	start_minishell(shell);
 	return (EXIT_SUCCESS);
 }

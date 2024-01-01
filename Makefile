@@ -3,27 +3,28 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+         #
+#    By: xdarksyderx <xdarksyderx@student.42.fr>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/27 13:10:04 by vnaslund          #+#    #+#              #
-#    Updated: 2023/12/20 18:07:30 by vnaslund         ###   ########.fr        #
+#    Updated: 2023/12/27 14:39:37 by xdarksyderx      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = minishell
 
 SOURCES = src/main.c src/parser/parser.c src/parser/parser_helpers.c \
-		  src/debug/print_cmd_list.c src/helpers/mem.c \
-		  src/execution/execute.c src/execution/start_minishell.c \
-		  src/execution/exec_utils.c src/execution/builtin_handler.c src/builtins/cd.c \
-		  src/builtins/exit.c src/builtins/pwd.c  src/builtins/echo.c
+          src/expander/expander.c src/expander/expander_utils.c \
+          src/debug/print_cmd_list.c src/helpers/mem.c src/helpers/signals.c \
+          src/execution/execute.c src/execution/start_minishell.c src/execution/pipes.c \
+          src/execution/exec_utils.c src/execution/builtin_handler.c src/builtins/env_utils.c \
+          src/builtins/cd.c src/builtins/env.c src/builtins/exit.c src/builtins/pwd.c src/builtins/echo.c \
 
 OBJ_DIR = obj/
 OBJECTS = $(SOURCES:%.c=$(OBJ_DIR)%.o)
 
 CC = cc
 READLINE_DIR = $(shell brew --prefix readline)
-CFLAGS = -Wall -Wextra -Werror -I$(READLINE_DIR)/include -I/libft
+CFLAGS = -Wall -Wextra -Werror -I$(READLINE_DIR)/include -I/libft -g
 LDFLAGS = -L$(READLINE_DIR)/lib -lreadline
 
 LIBFT_DIR = libft

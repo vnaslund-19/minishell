@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   start_minishell.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vnaslund <vnaslund@student.42.fr>          +#+  +:+       +#+        */
+/*   By: xdarksyderx <xdarksyderx@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 16:20:47 by vnaslund          #+#    #+#             */
-/*   Updated: 2023/12/20 18:28:37 by vnaslund         ###   ########.fr       */
+/*   Updated: 2023/12/27 20:33:39 by xdarksyderx      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,62 +14,44 @@
 
 int	g_interactive_mode;
 
-void	ft_ctrl_c(int signal)
+static char	*command_line(char *input)
 {
-	if (g_interactive_mode)
+	input = readline("minishell> ");
+	if (!input)
+		exit(0);
+	if (input[0])
 	{
-		(void)signal;
-		rl_on_new_line();
-		rl_redisplay();
-		rl_replace_line("", 0);
-		printf("\033[K\n");
-		rl_on_new_line();
-		rl_redisplay();
-		rl_replace_line("", 0);
+		add_history(input);
+		return (input);
 	}
 	else
-	{
-		write(1, "\n", 1);
-		rl_replace_line("", 1);
-		rl_on_new_line();
-	}
+		return (NULL);
 }
 
-// ctrl D sends signal EOF which is handled in start_minishell loop
-void	ft_sighandler(void)
-{
-	signal(SIGINT, ft_ctrl_c);
-	signal(SIGQUIT, SIG_IGN);
-	signal(SIGSTOP, SIG_IGN);
-}
-
-void	start_minishell(t_command *cmd_list, char **env)
+void	start_minishell(t_shell *shell)
 {
 	char	*input;
 	int		pid;
+	int		status;
 
 	ft_sighandler();
+	input = NULL;
 	while (1)
 	{
 		g_interactive_mode = 1;
-		input = readline("minishell> ");
+		input = command_line(input);
 		if (!input)
-			exit(0);
-		if (input[0])
-			add_history(input);
-		else
 			continue ;
-		cmd_list = ft_create_command_list(input);
 		g_interactive_mode = 0;
-		if (ft_is_cd_or_exit(cmd_list->args, cmd_list))
+		input = ft_expand(input, shell);
+		shell->top_command = ft_create_command_list(input);
+		if (ft_is_cd_or_exit(shell->top_command->args, shell))
 			continue ;
-		//debug_print_cmd_list(cmd_list);
-		//continue;
 		pid = fork();
 		if (pid == 0)
-			execute(cmd_list, cmd_list->args, env);
-		wait(NULL);
-		ft_free_cmd_list(cmd_list);
-		cmd_list = NULL;
+			execute(shell, shell->top_command->args, shell->env);
+		waitpid(pid, &status, 0);
+		shell->last_exit_status = WEXITSTATUS(status);
+		shell->top_command = ft_free_cmd_list(shell->top_command);
 	}
 }
