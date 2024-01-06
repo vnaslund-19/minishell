@@ -25,7 +25,9 @@
 void	ft_echo(char **cmd, t_shell *shell);
 int		ft_exit(char **cmd, t_shell *shell);
 void	ft_pwd(t_shell *shell);
-int		ft_cd(char **cmd);
+int		ft_cd(t_shell *shell, char **cmd);
 void	ft_env(char **envp, t_shell *shell);
+int		ft_unset(char **cmd, t_shell *shell);
+int		ft_export(char **cmd, t_shell *shell);
 
 #endif

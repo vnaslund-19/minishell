@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/builtins.h"
+#include "../../../inc/builtins.h"
 
 void	ft_env(char **envp, t_shell *shell)
 {
@@ -24,4 +24,27 @@ void	ft_env(char **envp, t_shell *shell)
 		i++;
 	}
 	exit_handler(EXIT_SUCCESS, shell, NULL);
+}
+
+int	ft_unset(char **cmd, t_shell *shell)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[++i])
+		ft_unsetenv(cmd[i], shell->env);
+	return (0);
+}
+
+int	ft_export(char **cmd, t_shell *shell)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[++i])
+	{
+		if (ft_setenv(cmd[i], &shell->env) == -1)
+			return (1);
+	}
+	return (0);
 }

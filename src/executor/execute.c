@@ -16,7 +16,7 @@ void	execute(t_shell *shell, char **cmd_wargs, char **env)
 {
 	if (!shell->top_command->next)
 	{
-		setup_redirection(shell);
+		setup_redirection(shell, true);
 		exec_cmd(shell, cmd_wargs, env);
 	}
 	else
@@ -28,16 +28,19 @@ void	exec_cmd(t_shell *shell, char **cmd_wargs, char **env)
 	char	*path;
 	bool	path_allocated;
 
-	ft_isbuiltin(cmd_wargs, shell);
+	execute_output_builtins(cmd_wargs, shell);
 	if (ft_strchr(cmd_wargs[0], '/'))
 		path = cmd_wargs[0];
 	else
 	{
 		path = get_path(cmd_wargs[0], env);
+		if (path == NULL)
+		{
+			errno = ENOENT;
+			exit_handler(CMD_NOT_FOUND, shell, "Cmd not found");
+		}
 		path_allocated = true;
 	}
-	if (path == NULL)
-		exit_handler(CMD_NOT_FOUND, shell, "Cmd not found");
 	if (execve(path, cmd_wargs, env) == -1)
 	{
 		if (path_allocated)

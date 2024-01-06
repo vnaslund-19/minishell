@@ -16,6 +16,9 @@ void	debug_print_command(t_command *cmd)
 			printf(": %s\n", cmd->args[i++]);
 		printf("  Stdin redirect: %s\n", cmd->stdin_redirect);
 		printf("  Stdout redirect: %s\n", cmd->stdout_redirect);
+		printf("  append mode: %i\n", cmd->append);
+		printf("  heredoc: %i\n", cmd->heredoc);
+		printf("  delimiter: %s\n", cmd->delimiter);
 		printf("\n");
 	}
 }

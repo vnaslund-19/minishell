@@ -12,20 +12,12 @@
 
 #include "../../inc/minishell.h"
 
-char	*get_path(char *cmd, char **env)
+char	*test_paths(char **possible_paths, char *cmd)
 {
-	char	**possible_paths;
 	int		i;
 	char	*path;
 	char	*temp;
 
-	i = -1;
-	while (env[++i])
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-			break ;
-	}
-	possible_paths = ft_split(env[i] + 5, ':');
 	i = -1;
 	while (possible_paths[++i])
 	{
@@ -37,12 +29,51 @@ char	*get_path(char *cmd, char **env)
 		free(path);
 		path = NULL;
 	}
+	return (path);
+}
+
+char	*get_path(char *cmd, char **env)
+{
+	char	**possible_paths;
+	int		i;
+	char	*path;
+
+	i = -1;
+	while (env[++i])
+	{
+		if (ft_strncmp(env[i], "PATH=", 5) == 0)
+			break ;
+	}
+	if (!env[i])
+		return (NULL);
+	possible_paths = ft_split(env[i] + 5, ':');
+	path = test_paths(possible_paths, cmd);
 	ft_free_array((void **)possible_paths);
 	return (path);
 }
 
-void	redirect_stdin(t_shell *shell)
+void	execute_heredoc(char *delimiter, int heredoc_fd[2])
 {
+	char	*line;
+
+	line = NULL;
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || !ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1))
+			break ;
+		write(heredoc_fd[1], line, ft_strlen(line));
+		write(heredoc_fd[1], "\n", 1);
+		free(line);
+	}
+	close(heredoc_fd[1]);
+	dup2(heredoc_fd[0], STDIN_FILENO);
+	close(heredoc_fd[0]);
+}
+
+void	redirect_stdin(t_shell *shell, bool handle_heredoc)
+{
+	int	heredoc_fd[2];
 	int	fd_in;
 
 	if (ft_strncmp(shell->top_command->stdin_redirect, "/dev/stdin", 11))
@@ -53,27 +84,30 @@ void	redirect_stdin(t_shell *shell)
 		dup2(fd_in, STDIN_FILENO);
 		close(fd_in);
 	}
+	if (shell->top_command->heredoc && handle_heredoc)
+	{
+		if (pipe(heredoc_fd) < 0)
+			exit_handler(1, shell, "pipe");
+		execute_heredoc(shell->top_command->delimiter, heredoc_fd);
+	}
 }
 
-void	setup_redirection(t_shell *shell)
+void	setup_redirection(t_shell *shell, bool handle_heredoc)
 {
 	int	fd_out;
-	int	i;
 
 	if (ft_strncmp(shell->top_command->stdout_redirect, "/dev/stdout", 12))
 	{
-		fd_out = open(shell->top_command->stdout_redirect,
-				O_WRONLY | O_CREAT | O_TRUNC, 0666);
+		if (shell->top_command->append)
+			fd_out = open(shell->top_command->stdout_redirect,
+					O_WRONLY | O_CREAT | O_APPEND, 0666);
+		else
+			fd_out = open(shell->top_command->stdout_redirect,
+					O_WRONLY | O_CREAT | O_TRUNC, 0666);
 		if (fd_out == -1)
 			exit_handler(EXIT_FAILURE, shell, "outfile open");
 		dup2(fd_out, STDOUT_FILENO);
 		close(fd_out);
-		i = 0;
-		while (shell->top_command->args[i])
-			i++;
-		free(shell->top_command->args[i]);
-		free(shell->top_command->args[i - 1]);
-		shell->top_command->args[i - 1] = NULL;
 	}
-	redirect_stdin(shell);
+	redirect_stdin(shell, handle_heredoc);
 }

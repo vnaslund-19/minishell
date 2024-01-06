@@ -13,11 +13,16 @@
 #ifndef SHELL_H
 # define SHELL_H
 
+# include "stdbool.h"
+
 typedef struct s_command
 {
 	char				**args;
 	char				*stdin_redirect;
+	bool				heredoc;
+	char				*delimiter;
 	char				*stdout_redirect;
+	bool				append;
 	struct s_command	*next;
 }	t_command;
 
